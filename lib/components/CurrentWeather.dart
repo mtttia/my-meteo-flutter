@@ -35,7 +35,7 @@ class CurrentWeather extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      child: Text('Cesena',
+                      child: Text(city!.name,
                           style: GoogleFonts.openSans(
                               textStyle: const TextStyle(fontSize: 22))),
                       alignment: Alignment.centerLeft,
@@ -53,7 +53,7 @@ class CurrentWeather extends StatelessWidget {
                 ),
                 const SizedBox(height: 30,),
                 SizedBox(
-                  height: 200,
+                  height: 240,
                   child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: List<dynamic>.from(

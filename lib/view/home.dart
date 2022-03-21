@@ -59,6 +59,7 @@ class _HomeState extends State<Home> {
         widget.setting!.isSelected() &&
         weather == null) {
       try {
+        print(widget.setting!.favouriteCity!.name);
         loadMeteo(
                 lat: widget.setting!.favouriteCity!.coord.lat,
                 lon: widget.setting!.favouriteCity!.coord.lon)
@@ -84,8 +85,8 @@ class _HomeState extends State<Home> {
                   decoration: const BoxDecoration(
                       color: lightBlue,
                       borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
+                          bottomLeft: Radius.circular(80),
+                          bottomRight: Radius.circular(80))),
                   height: height * 0.4 - 25,
                   // color: lightBlue,
                   child: Column(
@@ -93,19 +94,20 @@ class _HomeState extends State<Home> {
                       Container(
                         child: Row(
                         children: [
+                          Container(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.settings)),
+                          ),
                           Expanded(
-                              child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.settings)),
-                          )),
-                          Expanded(
+                              flex:1,
                               child: Container(
                                   alignment: Alignment.centerRight,
                                   child: Skeleton(
                                     child: Container(
-                                      child: Row(children: [
+                                      alignment: Alignment.topRight,
+                                      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                                         const Icon(Icons.thermostat),
                                         Text(weather != null
                                             ? weather!['current']['temp']
@@ -150,14 +152,14 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 Positioned(
-                    bottom: 0,
+                    bottom: 20,
                     left: 0,
                     right: 0,
                     child: Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.symmetric(horizontal: 30),
                         padding: const EdgeInsets.symmetric(horizontal: 30),
-                        height: 54,
+                        height: 65,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(50),

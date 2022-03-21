@@ -12,10 +12,16 @@ class HourCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: blue,
-        borderRadius: BorderRadius.circular(20)
+        borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                offset: Offset(0, 10),
+                blurRadius: 20,
+                color: Colors.black38.withOpacity(0.2))
+          ]
       ),
       padding: EdgeInsets.all(15),
-      margin: EdgeInsets.all(5),
+      margin: EdgeInsets.all(25),
       child: Column(
         children: [
           Container(
@@ -45,7 +51,7 @@ class HourCard extends StatelessWidget {
                 child: Column(
                   children: [
                     const Icon(Icons.water_drop),
-                    Text('${hour['pop'].toString()}%')
+                    Text('${hour['pop'].toString().padRight(2, '0')}%')
                   ],
                 ),
                 alignment: Alignment.centerRight,

@@ -8,6 +8,7 @@ import 'package:mymeteo/palette.dart';
 import 'package:mymeteo/request.dart';
 import 'package:mymeteo/view/home.dart';
 import 'package:mymeteo/util/fileManager.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 import 'class/City.dart';
 
@@ -74,7 +75,7 @@ class _AppState extends State<App> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar:Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
         decoration: BoxDecoration(
             color: background,
@@ -88,40 +89,35 @@ class _AppState extends State<App> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
-              gap: 8,
-              activeColor: Colors.black,
-              iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.black,
-              tabs: const [
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
+            child: BottomNavyBar(
+              selectedIndex: _selectedIndex,
+              showElevation: true, // use this to remove appBar's elevation
+              onItemSelected: (index) => setState(() {
+                _selectedIndex = index;
+                // _pageController.animateToPage(index,duration: Duration(milliseconds: 300), curve: Curves.ease);
+              }),
+              items: [
+                BottomNavyBarItem(
+                  icon: Icon(Icons.home),
+                  title: Text('Home'),
+                  activeColor: Colors.black,
                 ),
-                GButton(
-                  icon: Icons.favorite,
-                  text: 'Likes',
+                BottomNavyBarItem(
+                    icon: Icon(Icons.people),
+                    title: Text('Users'),
+                  activeColor: Colors.black,
                 ),
-                GButton(
-                  icon: Icons.search,
-                  text: 'Search',
+                BottomNavyBarItem(
+                    icon: Icon(Icons.message),
+                    title: Text('Messages'),
+                  activeColor: Colors.black,
                 ),
-                GButton(
-                  icon: Icons.person,
-                  text: 'Profile',
+                BottomNavyBarItem(
+                    icon: Icon(Icons.settings),
+                    title: Text('Settings'),
+                  activeColor: Colors.black,
                 ),
               ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
             ),
           ),
         ),
@@ -129,3 +125,8 @@ class _AppState extends State<App> {
     );
   }
 }
+/*
+* old navigation bar
+*
+*
+* */
