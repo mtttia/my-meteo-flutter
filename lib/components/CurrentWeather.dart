@@ -53,7 +53,7 @@ class CurrentWeather extends StatelessWidget {
                 ),
                 const SizedBox(height: 30,),
                 SizedBox(
-                  height: 240,
+                  height: 220,
                   child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: List<dynamic>.from(

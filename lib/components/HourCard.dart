@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mymeteo/palette.dart';
+import 'package:auto_size_text/auto_size_text.dart'
 
 class HourCard extends StatelessWidget {
   HourCard(this.hour, {Key? key}) : super(key: key);
@@ -15,13 +16,13 @@ class HourCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 10),
-                blurRadius: 20,
-                color: Colors.black38.withOpacity(0.2))
+                offset: Offset(0, 5),
+                blurRadius: 10,
+                color: Colors.black38.withOpacity(0.3))
           ]
       ),
       padding: EdgeInsets.all(15),
-      margin: EdgeInsets.all(25),
+      margin: EdgeInsets.only(bottom: 25, left: 15, top: 5),
       child: Column(
         children: [
           Container(
@@ -34,7 +35,7 @@ class HourCard extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(Icons.thermostat),
-                    Text('${hour['temp'].toString()}°')
+                    AutoSizeText('${hour['temp'].toString()}°', maxLines: 1,)
                   ],
                 ),
                 alignment: Alignment.centerLeft,
@@ -51,7 +52,7 @@ class HourCard extends StatelessWidget {
                 child: Column(
                   children: [
                     const Icon(Icons.water_drop),
-                    Text('${hour['pop'].toString().padRight(2, '0')}%')
+                    AutoSizeText('${hour['pop'].toString().padRight(2, '0')}%', maxLines: 1,)
                   ],
                 ),
                 alignment: Alignment.centerRight,
