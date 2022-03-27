@@ -6,6 +6,7 @@ import 'package:mymeteo/class/Setting.dart';
 import 'package:mymeteo/pages/favouriteCity.dart';
 import 'package:mymeteo/palette.dart';
 import 'package:mymeteo/request.dart';
+import 'package:mymeteo/view/counter.dart';
 import 'package:mymeteo/view/home.dart';
 import 'package:mymeteo/util/fileManager.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
@@ -56,10 +57,7 @@ class _AppState extends State<App> {
       Home(
         setting: setting,
       ),
-      Text(
-        'Likes',
-        style: optionStyle,
-      ),
+      CounterPage(),
       Text(
         'Search',
         style: optionStyle,
@@ -85,13 +83,13 @@ class _AppState extends State<App> {
                 color: Colors.black.withOpacity(.1),
               )
             ],
-            borderRadius: const BorderRadius.all(Radius.circular(20))),
+            borderRadius: const BorderRadius.all(Radius.circular(40))),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 1),
             child: BottomNavyBar(
               selectedIndex: _selectedIndex,
-              showElevation: true, // use this to remove appBar's elevation
+              showElevation: false, // use this to remove appBar's elevation
               onItemSelected: (index) => setState(() {
                 _selectedIndex = index;
                 // _pageController.animateToPage(index,duration: Duration(milliseconds: 300), curve: Curves.ease);

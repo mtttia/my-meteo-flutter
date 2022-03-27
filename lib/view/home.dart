@@ -5,11 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mymeteo/class/Setting.dart';
 import 'package:mymeteo/components/CurrentWeather.dart';
 import 'package:mymeteo/components/cityItem.dart';
+import 'package:mymeteo/pages/searcher.dart';
 import 'package:mymeteo/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:mymeteo/palette.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:provider/provider.dart';
+import 'package:mymeteo/providers/weather_provider.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key, required this.setting}) : super(key: key);
@@ -20,21 +23,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Map<String, dynamic>? weather;
+  // Map<String, dynamic>? weather;
   TextEditingController searchController = TextEditingController();
-
-  onWeather(Map<String, dynamic>? json) {
-    try {
-      setState(() {
-        weather = json!;
-      });
-    } catch (ex) {
-      rethrow;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? weather;
+    try {
+      weather = context
+              .watch<Weather>()
+              .weathers
+              .containsKey(widget.setting!.favouriteCity!.id)
+          ? context.watch<Weather>().weathers[widget.setting!.favouriteCity!.id]
+          : null;
+    } catch (ex) {
+      weather = null;
+    }
+
+    onWeather(Map<String, dynamic>? json) {
+      try {
+        context
+            .read<Weather>()
+            .pushWeather(widget.setting!.favouriteCity!.id, json!);
+      } catch (ex) {
+        rethrow;
+      }
+    }
+
     loadingWeatherError(Object obj) {
       showDialog<String>(
         context: context,
@@ -59,12 +74,17 @@ class _HomeState extends State<Home> {
         widget.setting!.isSelected() &&
         weather == null) {
       try {
-        print(widget.setting!.favouriteCity!.name);
-        loadMeteo(
-                lat: widget.setting!.favouriteCity!.coord.lat,
-                lon: widget.setting!.favouriteCity!.coord.lon)
-            .then(onWeather)
-            .catchError(loadingWeatherError);
+        if (context.watch<Weather>().empty ||
+            !context
+                .watch<Weather>()
+                .weathers
+                .containsKey(widget.setting!.favouriteCity!.id)) {
+          loadMeteo(
+                  lat: widget.setting!.favouriteCity!.coord.lat,
+                  lon: widget.setting!.favouriteCity!.coord.lon)
+              .then(onWeather)
+              .catchError(loadingWeatherError);
+        }
       } catch (ex) {
         print('error occurred_IN_HOME');
       }
@@ -93,43 +113,47 @@ class _HomeState extends State<Home> {
                     children: [
                       Container(
                         child: Row(
-                        children: [
-                          Container(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.settings)),
-                          ),
-                          Expanded(
-                              flex:1,
-                              child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Skeleton(
-                                    child: Container(
-                                      alignment: Alignment.topRight,
-                                      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                                        const Icon(Icons.thermostat),
-                                        Text(weather != null
-                                            ? weather!['current']['temp']
-                                                .toString()
-                                            : ""),
-                                        // Icon(Icons.grain),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(weather != null
-                                            ? weather!['current']['weather'][0]
-                                                    ['description']
-                                                .toString()
-                                            : ""),
-                                      ]),
-                                    ),
-                                    skeleton: SkeletonListTile(),
-                                    isLoading: weather == null,
-                                  )))
-                        ],
-                      ),
-                      margin: const EdgeInsets.symmetric(horizontal: 30),
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.settings)),
+                            ),
+                            Expanded(
+                                flex: 1,
+                                child: Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Skeleton(
+                                      child: Container(
+                                        alignment: Alignment.topRight,
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              const Icon(Icons.thermostat),
+                                              Text(weather != null
+                                                  ? weather['current']['temp']
+                                                      .toString()
+                                                  : ""),
+                                              // Icon(Icons.grain),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              Text(weather != null
+                                                  ? weather['current']
+                                                              ['weather'][0]
+                                                          ['description']
+                                                      .toString()
+                                                  : ""),
+                                            ]),
+                                      ),
+                                      skeleton: SkeletonListTile(),
+                                      isLoading: weather == null,
+                                    )))
+                          ],
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
                       ),
                       Row(
                         children: [
@@ -157,8 +181,8 @@ class _HomeState extends State<Home> {
                     right: 0,
                     child: Container(
                         alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(horizontal: 30),
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        margin: const EdgeInsets.symmetric(horizontal: 60),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         height: 65,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -174,19 +198,26 @@ class _HomeState extends State<Home> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              child: TextField(
-                                controller: searchController,
-                                decoration: const InputDecoration(
-                                    hintText: 'città',
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none),
-                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(18)
+                                ),
+                                child: TextField(
+                                  controller: searchController,
+                                  decoration: const InputDecoration(
+                                      hintText: 'città',
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none),
+                                ),
+                              )
                             ),
                             Container(
                               alignment: Alignment.centerRight,
                               child: IconButton(
                                   onPressed: () {
-                                    print('pressed');
+                                    Navigator.of(context).push(SearcherRoute(
+                                        toSearch: searchController.text));
                                   },
                                   icon: const Icon(Icons.search)),
                             )
@@ -210,9 +241,17 @@ class _HomeState extends State<Home> {
                         child: Container())
                   ]),
         Container(
-          child: widget.setting != null ? CurrentWeather(weather: weather, city: widget.setting!.favouriteCity, isLoading: weather == null) : Container(),
+          margin: EdgeInsets.only(top: 15),
+          child: widget.setting != null
+              ? CurrentWeather(
+                  weather: weather,
+                  city: widget.setting!.favouriteCity,
+                  isLoading: weather == null)
+              : Container(),
         ),
-        const SizedBox(height: 30,)
+        const SizedBox(
+          height: 30,
+        )
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mymeteo/class/City.dart';
 import 'package:mymeteo/components/cityCard.dart';
+import 'package:mymeteo/components/cityItem.dart';
 import 'package:mymeteo/util/city.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:mymeteo/view/home.dart';
@@ -23,14 +24,16 @@ class _SearchCityListState extends State<SearchCityList> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     List<Map<String, dynamic>> ret = searchCity(city, widget.toSearch);
-    return SingleChildScrollView(
-      child: Column(
+    return SizedBox(
+      height: height - height*0.3,
+      child: ListView(
         children: [
           for (var r in ret)
-            CityCard(
-                city: r,
-                onPress: () {
+            CityItem(
+                cityName: r['name'],
+                onClick: () {
                   onCitySelected(r);
                   Navigator.of(context).pop();
                 })
