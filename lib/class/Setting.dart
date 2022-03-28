@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mymeteo/class/City.dart';
 import 'package:mymeteo/util/fileManager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingLoader {
   bool isLoading = true;
@@ -22,6 +23,10 @@ class Setting {
     return ret;
   }
 
+  String get cityName {
+    return favouriteCity == null ? "" : favouriteCity!.name;
+  }
+
   Setting(this.favouriteCity) : favourites = [];
   Setting.empty() : favourites = [];
   Setting.fromJson(Map<String, dynamic> json)
@@ -29,6 +34,9 @@ class Setting {
         favourites = City.listFromJson(json['favourites']);
 
   static load() async {
+    if (kIsWeb) {
+      return Setting.fromJson(jsonDecode((await getItem('setting')) as String));
+    }
     return Setting.fromJson(jsonDecode(await FileManager.load()));
   }
 
@@ -57,19 +65,41 @@ class Setting {
   }
 
   save() async {
-    await FileManager.save(jsonEncode(toJson()));
+    if (kIsWeb) {
+      await setItem('setting', jsonEncode(toJson()));
+    }
+    else{
+      await FileManager.save(jsonEncode(toJson()));
+    }
   }
 
   Future<bool> isInitialized() async {
-    File file = await FileManager.getFile();
-    return file.exists();
-  }
+      if (kIsWeb) {
+        return await hasItem('setting');
+      }
+      File file = await FileManager.getFile();
+      return file.exists();
+    }
 
-  bool isSelected() {
-    return !(favouriteCity == null);
-  }
-
-  String get cityName {
-    return favouriteCity == null ? "" : favouriteCity!.name;
-  }
+    bool isSelected() {
+      return !(favouriteCity == null);
+    }
 }
+
+//method that check if a browser local storage item exists
+  Future<bool> hasItem(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(key);
+  }
+
+//method to acces to the browser local storage item, given the key
+  Future<String?> getItem(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
+  }
+
+//method to set the browser local storage item, given the key and the value
+  Future<bool> setItem(String key, String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString(key, value);
+  }

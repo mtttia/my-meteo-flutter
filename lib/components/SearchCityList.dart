@@ -27,7 +27,7 @@ class _SearchCityListState extends State<SearchCityList> {
     double height = MediaQuery.of(context).size.height;
     List<Map<String, dynamic>> ret = searchCity(city, widget.toSearch);
     return SizedBox(
-      height: height - height*0.3,
+      height: height - height * 0.3,
       child: ListView(
         children: [
           for (var r in ret)
@@ -46,6 +46,9 @@ class _SearchCityListState extends State<SearchCityList> {
 List<Map<String, dynamic>> searchCity(
     List<Map<String, dynamic>> cityes, String toSearch) {
   var ret = <Map<String, dynamic>>[];
+  if (toSearch == "") {
+    return ret;
+  }
   for (var c in cityes) {
     if (c['name'].toString().toUpperCase().contains(toSearch.toUpperCase())) {
       ret.add(c);

@@ -155,7 +155,9 @@ class _HomeState extends State<Home> {
                         ),
                         margin: const EdgeInsets.symmetric(horizontal: 30),
                       ),
-                      Row(
+                      SizedBox(
+                        height: height * 0.3,
+                        child: Row(
                         children: [
                           Expanded(
                             child: Image.asset(
@@ -171,6 +173,7 @@ class _HomeState extends State<Home> {
                             style: TextStyle(fontSize: 30),
                           ))
                         ],
+                      ),
                       ),
                     ],
                   ),

@@ -24,7 +24,7 @@ class FavCity extends StatefulWidget {
 }
 
 class _FavCityState extends State<FavCity> {
-  TextEditingController toSearch = TextEditingController(text: 'cesena');
+  TextEditingController toSearch = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
