@@ -26,7 +26,7 @@ class HourCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            child: Text('${date.hour} : ${date.minute}',
+            child: Text('${date.hour.toString().padRight(2, '0')} : ${date.minute.toString().padRight(2, '0')}',
                 style: GoogleFonts.openSans(textStyle:TextStyle(fontSize: 15))),
           ),
           SizedBox(

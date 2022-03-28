@@ -6,6 +6,7 @@ import 'package:mymeteo/class/Setting.dart';
 import 'package:mymeteo/components/CurrentWeather.dart';
 import 'package:mymeteo/components/cityItem.dart';
 import 'package:mymeteo/pages/searcher.dart';
+import 'package:mymeteo/pages/weather.dart';
 import 'package:mymeteo/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:skeletons/skeletons.dart';
@@ -158,22 +159,22 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         height: height * 0.3,
                         child: Row(
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              'assets/image/mw.png',
-                              width: width / 2 - 20,
+                          children: [
+                            Expanded(
+                              child: Image.asset(
+                                'assets/image/mw.png',
+                                width: width / 2 - 20,
+                              ),
+                              flex: 1,
                             ),
-                            flex: 1,
-                          ),
-                          const Expanded(
-                              child: AutoSizeText(
-                            'My meteo',
-                            maxLines: 2,
-                            style: TextStyle(fontSize: 30),
-                          ))
-                        ],
-                      ),
+                            const Expanded(
+                                child: AutoSizeText(
+                              'My meteo',
+                              maxLines: 2,
+                              style: TextStyle(fontSize: 30),
+                            ))
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -200,21 +201,19 @@ class _HomeState extends State<Home> {
                           alignment: AlignmentDirectional.center,
                           children: [
                             Container(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(18)
-                                ),
-                                child: TextField(
-                                  controller: searchController,
-                                  decoration: const InputDecoration(
-                                      hintText: 'città',
-                                      enabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none),
-                                ),
-                              )
-                            ),
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(18)),
+                                  child: TextField(
+                                    controller: searchController,
+                                    decoration: const InputDecoration(
+                                        hintText: 'città',
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none),
+                                  ),
+                                )),
                             Container(
                               alignment: Alignment.centerRight,
                               child: IconButton(
@@ -231,11 +230,16 @@ class _HomeState extends State<Home> {
         Stack(
             children: widget.setting != null
                 ? widget.setting!.allFavourites
-                    .map((e) => CityItem(
+                    .map((e) => Hero(
+                      tag: 'cityItem',
+                      child: CityItem(
                         onClick: () {
-                          print(e.name);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: Hero(WeatherCity(city: e,), tag: 'cityItem')),
+                          )
                         },
                         cityName: e.name))
+                    )
                     .toList()
                 : [
                     Skeleton(
