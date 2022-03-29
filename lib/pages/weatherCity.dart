@@ -34,7 +34,7 @@ class WeatherCityState extends State<WeatherCity> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: lightBlue,
-          elevation: 2,
+          elevation: 0,
           foregroundColor: Colors.black,
         ),
         body: Column(

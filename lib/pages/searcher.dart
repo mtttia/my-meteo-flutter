@@ -37,7 +37,7 @@ class _SearcherState extends State<Searcher> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: lightBlue,
-          elevation: 2,
+          elevation: 0,
           title: Text(
             'Cerca la tua città',
             style: GoogleFonts.openSans(),
@@ -47,11 +47,21 @@ class _SearcherState extends State<Searcher> {
         body: Column(
           children: [
             SizedBox(
-              height: height * 0.2,
+              height: height * 0.2 - 20,
               child: SafeArea(
                 child: Container(
-                  color: lightBlue,
-                  // child: Text(widget.toSearch)
+                  //put a shadow box just in bottom
+                  margin: EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration( 
+                    color: lightBlue,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.2),
+                        blurRadius: 7,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
+                  ),
                   child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 30),
                       child: Stack(
