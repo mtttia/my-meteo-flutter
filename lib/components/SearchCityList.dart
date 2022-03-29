@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mymeteo/class/City.dart';
 import 'package:mymeteo/components/cityCard.dart';
 import 'package:mymeteo/components/cityItem.dart';
@@ -22,12 +23,21 @@ class _SearchCityListState extends State<SearchCityList> {
     widget.onFound(city);
   }
 
+  List<Map<String, dynamic>> ret = [];
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    List<Map<String, dynamic>> ret = searchCity(city, widget.toSearch);
+    searchCity(city, widget.toSearch).then(
+      (value) => {
+        setState(() {
+          ret = value;
+        })
+      }
+    );
+    
     return SizedBox(
-      height: height - height * 0.3,
+      height: height - height * 0.3 - 56,
       child: ListView(
         children: [
           for (var r in ret)
@@ -35,7 +45,7 @@ class _SearchCityListState extends State<SearchCityList> {
                 cityName: r['name'],
                 onClick: () {
                   onCitySelected(r);
-                  Navigator.of(context).pop();
+                  // Navigator.of(context).pop();
                 })
         ],
       ),
@@ -43,8 +53,8 @@ class _SearchCityListState extends State<SearchCityList> {
   }
 }
 
-List<Map<String, dynamic>> searchCity(
-    List<Map<String, dynamic>> cityes, String toSearch) {
+Future<List<Map<String, dynamic>>> searchCity(
+    List<Map<String, dynamic>> cityes, String toSearch) async {
   var ret = <Map<String, dynamic>>[];
   if (toSearch == "") {
     return ret;

@@ -5,10 +5,13 @@ import 'package:mymeteo/providers/counter.dart';
 import 'package:mymeteo/providers/weather_provider.dart';
 import 'package:mymeteo/request.dart';
 import 'package:provider/provider.dart';
+import 'package:mymeteo/providers/setting.dart';
 
 void main() {
   runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => Counter()), ChangeNotifierProvider(create: (_)=>Weather())],
+      providers: [ChangeNotifierProvider(create: (_) => Counter()), 
+      ChangeNotifierProvider(create: (_)=>Weather()), 
+      ChangeNotifierProvider(create: (_) => Setting(),)],
       child: MyApp()));
 
   //const MyApp()

@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:mymeteo/class/Setting.dart';
+// import 'package:mymeteo/class/Setting.dart';
+import 'package:mymeteo/providers/setting.dart';
 import 'package:mymeteo/pages/favouriteCity.dart';
 import 'package:mymeteo/palette.dart';
 import 'package:mymeteo/request.dart';
@@ -10,7 +11,7 @@ import 'package:mymeteo/view/counter.dart';
 import 'package:mymeteo/view/home.dart';
 import 'package:mymeteo/util/fileManager.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-
+import 'package:provider/provider.dart';
 import 'class/City.dart';
 
 class App extends StatefulWidget {
@@ -23,40 +24,29 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   int _selectedIndex = 0;
   Map<String, dynamic>? weather;
-  Setting? setting;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
 
-  Future<void> askCity(BuildContext context) async {
-    if (!(await setting!.isInitialized())) {
-      Navigator.of(context).push(FavouriteCityRoute(onFound: (City city) {
-        setting!.updateCity(city);
-        setState(() {});
-      }));
-    }
-  }
-
-  void settinIsLoaded(Setting value) async {
-    setState(() {
-      setting = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (setting == null) {
-      Setting.tryLoad().then(settinIsLoaded);
-    } else {
-      if (!setting!.isSelected()) {
-        askCity(context);
+    var setting = context.watch<Setting>();
+
+    Future<void> askCity() async {
+      Navigator.of(context).push(FavouriteCityRoute(onFound: (City city) {
+        setting.updateCity(city);
+        Navigator.of(context).pop();
+      }));
+    }
+
+    if (setting.isLoaded) {
+      if (setting.favouriteCity == null) {
+        askCity();
       }
     }
 
     List<Widget> _widgetOptions = <Widget>[
-      Home(
-        setting: setting,
-      ),
+      Home(),
       CounterPage(),
       Text(
         'Search',
@@ -73,7 +63,7 @@ class _AppState extends State<App> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar:Container(
+      bottomNavigationBar: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
         decoration: BoxDecoration(
             color: background,
@@ -101,18 +91,18 @@ class _AppState extends State<App> {
                   activeColor: Colors.black,
                 ),
                 BottomNavyBarItem(
-                    icon: Icon(Icons.people),
-                    title: Text('Users'),
+                  icon: Icon(Icons.people),
+                  title: Text('Users'),
                   activeColor: Colors.black,
                 ),
                 BottomNavyBarItem(
-                    icon: Icon(Icons.message),
-                    title: Text('Messages'),
+                  icon: Icon(Icons.message),
+                  title: Text('Messages'),
                   activeColor: Colors.black,
                 ),
                 BottomNavyBarItem(
-                    icon: Icon(Icons.settings),
-                    title: Text('Settings'),
+                  icon: Icon(Icons.settings),
+                  title: Text('Settings'),
                   activeColor: Colors.black,
                 ),
               ],
