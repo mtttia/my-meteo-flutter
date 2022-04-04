@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mymeteo/class/City.dart';
-import 'package:mymeteo/util/fileManager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mymeteo/class/FileAssistant.dart';
+
+FileAssistant fa = FileAssistant('setting.json');
 
 class Setting with ChangeNotifier {
   City? favouriteCity;
@@ -45,19 +46,15 @@ class Setting with ChangeNotifier {
   void load() async {
     try {
       String json;
-      if (kIsWeb) {
-        json = (await getItem('setting')) as String;
-      } else {
-        json = await FileManager.load();
-      }
+      json = await fa.load();
       loadFromJson(json);
       isLoaded = true;
       firstTime = false;
       notifyListeners();
-      print(this.toJson());
     } catch (ex) {
       //initialize new Setting
       firstTime = true;
+      isLoaded = true;
       notifyListeners();
     }
   }
@@ -98,11 +95,7 @@ class Setting with ChangeNotifier {
   }
 
   save() async {
-    if (kIsWeb) {
-      await setItem('setting', jsonEncode(toJson()));
-    } else {
-      await FileManager.save(jsonEncode(toJson()));
-    }
+    await fa.setData(jsonEncode(toJson()));
   }
 
   Map<String, dynamic> toJson() {
@@ -112,22 +105,4 @@ class Setting with ChangeNotifier {
       'chronology': chronology
     };
   }
-}
-
-//method that check if a browser local storage item exists
-Future<bool> hasItem(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.containsKey(key);
-}
-
-//method to acces to the browser local storage item, given the key
-Future<String?> getItem(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString(key);
-}
-
-//method to set the browser local storage item, given the key and the value
-Future<bool> setItem(String key, String value) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.setString(key, value);
 }

@@ -39,7 +39,7 @@ class _AppState extends State<App> {
       }));
     }
 
-    if (setting.isLoaded) {
+    if (setting.firstTime && setting.isLoaded) {
       if (setting.favouriteCity == null) {
         askCity();
       }
