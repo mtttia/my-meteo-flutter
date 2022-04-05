@@ -24,7 +24,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   int _selectedIndex = 0;
   Map<String, dynamic>? weather;
-
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
 
